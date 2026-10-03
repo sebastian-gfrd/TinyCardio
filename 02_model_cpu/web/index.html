@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyCardio — Monitor de Triaje Rural & Telemetría Médica</title>
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --panel: #131a2a;
+            --border: #1f2d47;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+            --cyan: #06b6d4;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+        body { background: var(--bg); color: var(--text); padding: 1.5rem; min-height: 100vh; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .title { font-size: 1.5rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+        .badge { background: #1e293b; color: var(--cyan); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; }
+        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+        .card-header { font-size: 0.9rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; justify-content: space-between; }
+        canvas { width: 100%; height: 260px; background: #050811; border-radius: 6px; border: 1px solid #162032; }
+        .status-box { padding: 1rem; border-radius: 6px; text-align: center; margin-bottom: 1rem; transition: all 0.3s; }
+        .status-normal { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--green); color: var(--green); }
+        .status-alert { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--red); color: var(--red); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .metric-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem; }
+        .metric-val { font-weight: 700; color: #fff; }
+        .progress-bar { background: #1e293b; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 0.4rem; }
+        .progress-fill { height: 100%; width: 0%; background: var(--green); transition: width 0.2s, background 0.3s; }
+        .controls { display: flex; gap: 0.75rem; margin-top: 1rem; }
+        select, button { background: #1e293b; color: #fff; border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        button:hover, select:hover { background: #334155; }
+        .btn-active { background: var(--cyan); color: #000; font-weight: 700; }
+        .payload-box { background: #050811; border: 1px solid #1e293b; padding: 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; word-break: break-all; color: #38bdf8; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">
+            <span>❤️ TinyCardio</span>
+            <span class="badge">Small AI / TinyML</span>
+            <span class="badge">CPU Gateway Engine</span>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-dim);">
+            World Bank Global AI Summit Hackathon 2026
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-header">
+                <span>Osciloscopio ECG en Tiempo Real (250 Hz)</span>
+                <span id="time-display">0.0 s</span>
+            </div>
+            <canvas id="ecgCanvas"></canvas>
+
+            <div class="controls">
+                <select id="recordSelect">
+                    <option value="data/vfdb/418">VFDB 418 (Arritmia Maligna / Flutter)</option>
+                    <option value="data/sddb/30">SDDB 30 (Paro Cardíaco / Muerte Súbita)</option>
+                    <option value="data/edb/e0103">EDB e0103 (Isquemia Miocárdica ST-T)</option>
+                    <option value="data/nsrdb/16265">NSRDB 16265 (Control - Ritmo Sinusal)</option>
+                </select>
+                <button id="toggleBtn" class="btn-active">Iniciar Monitoreo</button>
+                <button id="resetBtn">Reiniciar</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">Evaluación de Riesgo Clínico</div>
+                <div id="statusBox" class="status-box status-normal">
+                    <div id="statusText" style="font-size: 1.1rem; font-weight: 700;">RITMO NORMAL</div>
+                    <div id="statusSub" style="font-size: 0.8rem; margin-top: 0.2rem;">Línea base estable</div>
+                </div>
+
+                <div class="metric-row">
+                    <span>Nivel de Riesgo Predictivo:</span>
+                    <span id="riskPct" class="metric-val">0.0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="riskFill" class="progress-fill"></div>
+                </div>
+
+                <div class="metric-row" style="margin-top: 1rem;">
+                    <span>Latencia de Inferencia CPU:</span>
+                    <span id="latencyVal" class="metric-val">0.00 ms</span>
+                </div>
+                <div class="metric-row">
+                    <span>Frecuencia de Muestreo:</span>
+                    <span class="metric-val">250 Hz</span>
+                </div>
+                <div class="metric-row">
+                    <span>Memoria Tensor Arena:</span>
+                    <span class="metric-val">&lt; 2.5 KB RAM</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Telemetría de Emergencia SMS 2G / LoRa (&lt;60B)</div>
+                <div style="font-size: 0.8rem; color: var(--text-dim);">Payload transmitible sin internet vía red celular básica:</div>
+                <div id="payloadBox" class="payload-box">ESPERANDO TRANSMISIÓN...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('ecgCanvas');
+        const ctx = canvas.getContext('2d');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const recordSelect = document.getElementById('recordSelect');
+        const statusBox = document.getElementById('statusBox');
+        const statusText = document.getElementById('statusText');
+        const statusSub = document.getElementById('statusSub');
+        const riskPct = document.getElementById('riskPct');
+        const riskFill = document.getElementById('riskFill');
+        const latencyVal = document.getElementById('latencyVal');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const payloadBox = document.getElementById('payloadBox');
+
+        let isRunning = false;
+        let windowIndex = 0;
+        let timer = null;
+        let ecgHistory = [];
+        const maxPoints = 500;
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth - 40;
+            canvas.height = 240;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawECG() {
+            ctx.fillStyle = '#050811';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid
+            ctx.strokeStyle = '#111a2e';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 25) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += 25) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+
+            if (ecgHistory.length < 2) return;
+
+            // Draw waveform
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#10b981';
+            ctx.beginPath();
+
+            const step = canvas.width / maxPoints;
+            const midY = canvas.height / 2;
+
+            for (let i = 0; i < ecgHistory.length; i++) {
+                const x = i * step;
+                const y = midY - (ecgHistory[i] * 35);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        async function fetchNextWindow() {
+            if (!isRunning) return;
+            try {
+                const rec = recordSelect.value;
+                const res = await fetch(`/api/stream_patient?record=${encodeURIComponent(rec)}&index=${windowIndex}`);
+                const data = await res.json();
+
+                if (data.finished) {
+                    toggleMonitoring();
+                    return;
+                }
+
+                // Append samples
+                for (let s of data.samples) {
+                    ecgHistory.push(s);
+                    if (ecgHistory.length > maxPoints) ecgHistory.shift();
+                }
+                drawECG();
+
+                // Update metrics
+                timeDisplay.textContent = `${data.time_seconds.toFixed(1)} s`;
+                const risk = data.risk_score * 100;
+                riskPct.textContent = `${risk.toFixed(1)}%`;
+                riskFill.style.width = `${Math.min(100, Math.max(0, risk))}%`;
+                latencyVal.textContent = `${data.latency_ms.toFixed(2)} ms`;
+
+                if (data.is_alert) {
+                    statusBox.className = 'status-box status-alert';
+                    statusText.textContent = '⚠️ ALERTA: PATOLOGÍA CRÍTICA';
+                    statusSub.textContent = data.classification;
+                    riskFill.style.background = 'var(--red)';
+                    payloadBox.textContent = `TC:D=2A1B;E=ALERT;R=${Math.round(risk)}%;TS=${Math.round(data.time_seconds)}s`;
+                } else {
+                    statusBox.className = 'status-box status-normal';
+                    statusText.textContent = 'RITMO ESTABLE';
+                    statusSub.textContent = data.classification;
+                    riskFill.style.background = 'var(--green)';
+                    payloadBox.textContent = `TC:D=2A1B;E=NORM;R=${Math.round(risk)}%;TS=${Math.round(data.time_seconds)}s`;
+                }
+
+                windowIndex++;
+                timer = setTimeout(fetchNextWindow, 100);
+            } catch (err) {
+                console.error(err);
+                toggleMonitoring();
+            }
+        }
+
+        function toggleMonitoring() {
+            isRunning = !isRunning;
+            if (isRunning) {
+                toggleBtn.textContent = 'Pausar';
+                toggleBtn.className = '';
+                fetchNextWindow();
+            } else {
+                toggleBtn.textContent = 'Continuar';
+                toggleBtn.className = 'btn-active';
+                if (timer) clearTimeout(timer);
+            }
+        }
+
+        toggleBtn.addEventListener('click', toggleMonitoring);
+        resetBtn.addEventListener('click', () => {
+            if (timer) clearTimeout(timer);
+            isRunning = false;
+            windowIndex = 0;
+            ecgHistory = [];
+            toggleBtn.textContent = 'Iniciar Monitoreo';
+            toggleBtn.className = 'btn-active';
+            drawECG();
+        });
+        recordSelect.addEventListener('change', () => {
+            resetBtn.click();
+        });
+
+        drawECG();
+    </script>
+</body>
+</html>
