@@ -1,0 +1,76 @@
+{
+  "survey_metadata": {
+    "source": "World Bank Service Delivery Indicators (SDI) - Health Facility Survey",
+    "year": 2024,
+    "catchment_region": "Ondera Highlands District",
+    "target_population": "Rural Smallholder Farmers & Highland Communities",
+    "representative_persona": "Noor (38y, Ondera Coffee Cooperative)"
+  },
+  "district_benchmarks": {
+    "average_provider_absence_rate_pct": 37.8,
+    "average_caseload_per_provider_per_day": 41.6,
+    "essential_tracer_drugs_availability_pct": 54.2,
+    "functional_diagnostic_equipment_availability_pct": 48.0,
+    "clinical_guideline_adherence_rate_pct": 43.5,
+    "average_patient_paperwork_burden_minutes_per_case": 16.4
+  },
+  "facilities": [
+    {
+      "facility_id": "HF-OND-01",
+      "name": "Ondera Sub-County Dispensary",
+      "tier": "Primary Care Dispensary (Level 2)",
+      "coordinates": {"lat": -0.4285, "lng": 36.9512},
+      "distance_from_noor_km": 4.2,
+      "estimated_travel_time_walk_min": 65,
+      "provider_on_duty_today": true,
+      "staff_name": "Clinical Officer Amina / Nurse Tobi",
+      "stock_status": {
+        "paracetamol": "IN_STOCK",
+        "oral_rehydration_salts": "IN_STOCK",
+        "amoxicillin": "STOCKOUT",
+        "salbutamol_inhaler": "IN_STOCK",
+        "antihypertensive_atenolol": "IN_STOCK",
+        "rapid_malaria_rdt": "IN_STOCK"
+      },
+      "current_queue_length": 14,
+      "dhis2_facility_code": "KE_OND_DISP_01"
+    },
+    {
+      "facility_id": "HF-OND-02",
+      "name": "Kipkabus Hill Health Center",
+      "tier": "Health Center (Level 3)",
+      "coordinates": {"lat": -0.3950, "lng": 36.9820},
+      "distance_from_noor_km": 9.8,
+      "estimated_travel_time_walk_min": 140,
+      "provider_on_duty_today": false,
+      "absence_reason": "Outreach mobile vaccination campaign in Upper Valley",
+      "staff_name": "Dr. Kiprono (Absent today)",
+      "stock_status": {
+        "paracetamol": "IN_STOCK",
+        "amoxicillin": "STOCKOUT",
+        "oral_rehydration_salts": "STOCKOUT"
+      },
+      "current_queue_length": 0,
+      "dhis2_facility_code": "KE_OND_HC_02"
+    },
+    {
+      "facility_id": "HF-OND-03",
+      "name": "Ondera District Referral Hospital",
+      "tier": "District Hospital (Level 4)",
+      "coordinates": {"lat": -0.4610, "lng": 36.9200},
+      "distance_from_noor_km": 16.5,
+      "estimated_travel_time_motorcycle_min": 35,
+      "provider_on_duty_today": true,
+      "staff_name": "Emergency Medical Officer On Call",
+      "stock_status": {
+        "emergency_cardiac_care": "IN_STOCK",
+        "defibrillator_functional": true,
+        "oxygen_concentrator": "IN_STOCK",
+        "amoxicillin": "IN_STOCK",
+        "antihypertensives": "IN_STOCK"
+      },
+      "current_queue_length": 38,
+      "dhis2_facility_code": "KE_OND_HOSP_03"
+    }
+  ]
+}
