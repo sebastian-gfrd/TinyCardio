@@ -44,9 +44,13 @@ def normalize_window(window: np.ndarray) -> np.ndarray:
     return ((window - np.mean(window)) / std).astype(np.float32)
 
 
-def extract_windows_from_record(record_path: str, label: int, window_size: int = 250, step_size: int = 125, max_windows: int = 500) -> Tuple[np.ndarray, np.ndarray]:
+from augmentations import augment_ecg_window
+
+
+def extract_windows_from_record(record_path: str, label: int, window_size: int = 250, step_size: int = 125, max_windows: int = 500, augment: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
     Loads an ECG record, extracts Channel 0, applies filtering, and slices into sliding windows.
+    If augment=True, injects realistic rural sensor noise (EMG, baseline drift, 50/60 Hz hum).
     Returns:
         X: array of shape (N, window_size, 1)
         y: array of shape (N,)
@@ -72,6 +76,14 @@ def extract_windows_from_record(record_path: str, label: int, window_size: int =
         w = sig_filtered[start:start + window_size]
         w_norm = normalize_window(w)
         windows.append(w_norm)
+
+        # In training mode, inject realistic physical noise
+        if augment:
+            w_aug = augment_ecg_window(w, fs=250.0, p_apply=0.85)
+            # Digital filter on device cleans high-order artifacts
+            w_aug_filt = butter_bandpass_filter(w_aug, lowcut=0.5, highcut=40.0, fs=250.0)
+            windows.append(normalize_window(w_aug_filt))
+
         if len(windows) >= max_windows:
             break
 
@@ -135,16 +147,17 @@ def build_dataset(base_data_dir: str = 'data', window_size: int = 250, max_windo
 
     dataset = {}
     for split_name, categories in splits.items():
+        is_train = (split_name == 'train')
         X_list, y_list = [], []
         # Process Class 0
         for path, lbl in categories['c0']:
-            X_w, y_w = extract_windows_from_record(path, lbl, window_size=window_size, max_windows=max_windows_per_rec)
+            X_w, y_w = extract_windows_from_record(path, lbl, window_size=window_size, max_windows=max_windows_per_rec, augment=is_train)
             if len(X_w) > 0:
                 X_list.append(X_w)
                 y_list.append(y_w)
         # Process Class 1
         for path, lbl in categories['c1']:
-            X_w, y_w = extract_windows_from_record(path, lbl, window_size=window_size, max_windows=max_windows_per_rec // 2)
+            X_w, y_w = extract_windows_from_record(path, lbl, window_size=window_size, max_windows=max_windows_per_rec // 2, augment=is_train)
             if len(X_w) > 0:
                 X_list.append(X_w)
                 y_list.append(y_w)
