@@ -1,0 +1,47 @@
+{
+  "overall": {
+    "total_test_samples": 1502,
+    "positive_samples": 702,
+    "negative_samples": 800,
+    "confusion_matrix": {
+      "true_positives": 612,
+      "false_positives": 376,
+      "true_negatives": 424,
+      "false_negatives": 90
+    },
+    "metrics": {
+      "accuracy": 0.6897,
+      "sensitivity_recall": 0.8718,
+      "specificity": 0.53,
+      "precision": 0.6194,
+      "f1_score": 0.7243,
+      "roc_auc": 0.6742
+    }
+  },
+  "per_database": {
+    "NSRDB (Healthy Control)": {
+      "total_windows_evaluated": 300,
+      "mean_risk_score": 0.6498,
+      "alerts_triggered": 211,
+      "correct_classification_rate": 29.67
+    },
+    "VFDB (Lethal Ventricular Arrhythmias)": {
+      "total_windows_evaluated": 162,
+      "mean_risk_score": 0.7566,
+      "alerts_triggered": 162,
+      "correct_classification_rate": 100.0
+    },
+    "SDDB (Sudden Cardiac Death Pre-Arrest)": {
+      "total_windows_evaluated": 162,
+      "mean_risk_score": 0.6899,
+      "alerts_triggered": 151,
+      "correct_classification_rate": 93.21
+    },
+    "EDB (Myocardial Ischemia ST-T)": {
+      "total_windows_evaluated": 162,
+      "mean_risk_score": 0.455,
+      "alerts_triggered": 34,
+      "correct_classification_rate": 20.99
+    }
+  }
+}
