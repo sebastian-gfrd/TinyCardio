@@ -1,0 +1,23 @@
+database,database_name,clinical_category,record_id,sampling_rate_hz,num_channels,channels,gain_adc_per_mv,num_samples,start_time,duration_seconds,duration_hours,duration_formatted,patient_age,patient_sex,clinical_notes,has_atr,has_ari,has_xws,has_qrs,dat_size_mb
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,418,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,419,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,420,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,421,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,422,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,423,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,424,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,425,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,426,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,427,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,428,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,429,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,430,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,602,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,605,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,607,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,609,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,610,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,611,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,True,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,612,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,614,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5
+vfdb,MIT-BIH Malignant Ventricular Ectopy Database,Arritmias Ventriculares Letales / Malignas,615,250.0,2,ECG/ECG,200/200,525000,,2100.0,0.58,00:35:00,,,,True,False,True,False,1.5

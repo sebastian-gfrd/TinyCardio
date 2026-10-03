@@ -1,0 +1,5 @@
+# Requirements for JAX GPU Training with NVIDIA RTX 5070 (CUDA 12)
+numpy>=2.1
+scipy>=1.15
+optax>=0.2.8
+jax[cuda12]
