@@ -1,48 +1,73 @@
-# TinyCardio — Módulo de Inferencia en CPU (02_model_cpu)
+# TinyCardio — CPU Inference, Gateway & Triage Module (02_model_cpu)
 
-Este directorio contiene el motor de inferencia optimizado para ejecución en **CPU** del modelo TinyCardio 1D-CNN, ideal para estaciones de triaje clínico local, ordenadores portátiles de personal de salud comunitario (CHWs) y gateways de telemedicina rural.
-
----
-
-## Contenido del Directorio
-
-* **`model_weights/`**: Contiene los pesos entrenados del modelo en formatos `.npz` y `.json`.
-* **`inference_cpu.py`**: Motor de inferencia determinista y ultraligero que realiza la convolución 1D, pooling y clasificación sigmoide en NumPy estándar.
-* **`benchmark_cpu.py`**: Herramienta de pruebas de rendimiento para medir latencia y rendimiento de procesamiento continuo.
-* **`run_patient_simulation.py`**: Simulador en tiempo real que procesa señales de ECG de pacientes ventana a ventana y emite alertas automáticas ante arritmias o isquemia.
+This directory contains the optimized **CPU execution runtime**, local clinic gateway server, live interactive oscilloscope dashboard, and 2G SMS telemetry hub for the TinyCardio 1D-CNN model. It is designed for rural primary health posts, Community Health Worker (CHW) field laptops, and district emergency dispatch centers.
 
 ---
 
-## Uso Rápido
+## Directory Contents
 
-### 1. Evaluar una ventana de prueba en Python
+* **`model_weights/`**: Contains the trained model weights exported in `.npz` and `.json` formats.
+* **`inference_cpu.py`**: Deterministic, ultra-lightweight NumPy inference engine executing 1D convolution, pooling, and sigmoid classification without framework overhead (< 0.8 ms latency per window).
+* **`benchmark_cpu.py`**: Performance benchmarking suite measuring latency distribution and continuous window processing throughput.
+* **`run_patient_simulation.py`**: Real-time streaming simulator that streams patient ECG signals window by window and triggers autonomous clinical alerts.
+* **`cli_monitor.py`**: Interactive ANSI terminal monitor rendering a live ASCII oscilloscope waveform and dynamic risk gauge for headless or SSH remote environments.
+* **`gateway_server.py`**: Zero-dependency Python HTTP server serving REST endpoints (`GET /`, `POST /api/predict`, `GET /api/stream_patient`) and an interactive HTML5 Canvas oscilloscope dashboard (`web/index.html`).
+* **`sms_telemetry_webhook.py`**: Microservice that ingests incoming 2G SMS payloads (<60 bytes), correlates them with pre-registered rural patient medical records, tracks Golden Hour countdowns, and broadcasts real-time updates via Server-Sent Events (SSE).
+* **`simulate_telemetry_event.py`**: Command-line utility to simulate edge node emergency SMS transmission into the triage hub for live hackathon demonstrations.
+* **`web/index.html`**: Clean dark-mode clinical dashboard with real-time waveform visualization, BPM detection, and triage level gauges.
+
+---
+
+## Quick Usage
+
+### 1. Evaluate a Test Window in Python
 ```python
 from inference_cpu import TinyCardioCPU
 import numpy as np
 
-# Cargar motor de inferencia (umbral de alerta = 0.5)
+# Load inference engine (alert threshold = 0.5)
 model = TinyCardioCPU('model_weights/tinycardio_cpu_weights.npz', alert_threshold=0.5)
 
-# Ventana de 250 muestras de ECG (1 segundo a 250 Hz)
+# ECG window of 250 samples (1 second at 250 Hz)
 ecg_window = np.random.randn(250)
 
-# Predicción
+# Prediction
 result = model.predict_window(ecg_window)
 print(result)
-# {'risk_score': 0.8741, 'classification': 'HIGH_ALERT_PATHOLOGY', 'is_alert': True, 'latency_ms': 0.18}
+# {'risk_score': 0.8741, 'classification': 'HIGH_ALERT_PATHOLOGY', 'is_alert': True, 'latency_ms': 0.68}
 ```
 
-### 2. Ejecutar Benchmark de Rendimiento en CPU
+### 2. Run CPU Latency and Throughput Benchmark
 ```bash
 python3 02_model_cpu/benchmark_cpu.py
 ```
-*Latencia típica:* **$< 0.25\text{ ms}$** por ventana de 1 segundo de ECG en CPU moderna (throughput de más de 4,000 ventanas/segundo).
+*Measured Performance:* **$< 0.70\text{ ms}$** mean latency per 1-second ECG window on standard x86 CPU (> 1,400 windows/second throughput).
 
-### 3. Simular Monitoreo en Tiempo Real de un Paciente
+### 3. Simulate Real-Time Patient Streaming
 ```bash
-# Simular paciente con taquicardia/fibrilación ventricular de VFDB
+# Simulate a patient experiencing malignant ventricular fibrillation from VFDB
 python3 02_model_cpu/run_patient_simulation.py data/vfdb/418
 
-# Simular paciente de control sano de NSRDB
+# Simulate a healthy control subject from NSRDB
 python3 02_model_cpu/run_patient_simulation.py data/nsrdb/16265
+```
+
+### 4. Launch Rural Clinic Triage Gateway & Web Dashboard
+```bash
+python3 02_model_cpu/gateway_server.py --port 8080
+# Open http://localhost:8080 in any web browser
+```
+
+### 5. Launch Terminal Live Oscilloscope (Headless / SSH Mode)
+```bash
+python3 02_model_cpu/cli_monitor.py data/vfdb/418
+```
+
+### 6. Run the 2G SMS Telemetry Hub & Dispatch Webhook
+```bash
+python3 02_model_cpu/sms_telemetry_webhook.py --port 8090
+```
+In another terminal, simulate an emergency event transmission:
+```bash
+python3 02_model_cpu/simulate_telemetry_event.py --device 1024 --event VF --risk 97 --hr 185
 ```

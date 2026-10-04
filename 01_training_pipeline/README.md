@@ -1,39 +1,56 @@
-# TinyCardio — Pipeline de Ingesta y Entrenamiento con JAX GPU / CUDA (01_training_pipeline)
+# TinyCardio — Ingestion and Training Pipeline with JAX GPU / CUDA (01_training_pipeline)
 
-Este directorio contiene la arquitectura del modelo **TinyCardio 1D-CNN**, la ingesta de las bases de datos de PhysioNet (`nsrdb`, `edb`, `vfdb`, `sddb`) y el pipeline de entrenamiento acelerado por **GPU NVIDIA GeForce RTX 5070 con CUDA 12**.
+This directory contains the **TinyCardio 1D-CNN** model architecture, the ingestion pipeline for PhysioNet benchmark databases (`nsrdb`, `edb`, `vfdb`, `sddb`), and the hardware-accelerated training pipeline powered by **NVIDIA GeForce RTX 5070 GPU with CUDA 12**.
 
 ---
 
-## Archivos y Componentes
+## Files and Components
 
 * **`dataset_generator.py`**: 
-  * Carga registros clínicos de `data/nsrdb`, `data/edb`, `data/vfdb` y `data/sddb`.
-  * Convierte las señales a milivoltios físicos y re-muestrea `nsrdb` de 128 Hz a 250 Hz con filtro anti-aliasing.
-  * Aplica filtrado pasabanda Butterworth (0.5 – 40 Hz) y segmenta ventanas deslizantes de 250 muestras (1 segundo a 250 Hz).
-  * Realiza una partición estratificada **a nivel de paciente** (70% Train, 15% Val, 15% Test) para evitar *data leakage*.
-  * Exporta los datos a `processed_data/dataset_250hz.npz`.
+  * Ingests clinical records from `data/nsrdb`, `data/edb`, `data/vfdb`, and `data/sddb`.
+  * Converts raw signals to physical millivolts and resamples `nsrdb` from 128 Hz to 250 Hz using a polyphase anti-aliasing filter.
+  * Applies a 2nd-order Butterworth bandpass filter (0.5 – 40 Hz) and segments continuous records into sliding windows of 250 samples (1 second at 250 Hz).
+  * Performs strict **patient-level stratified partitioning** (70% Train, 15% Val, 15% Test) to eliminate data leakage.
+  * Exports formatted tensors to `processed_data/dataset_250hz.npz`.
+* **`augmentations.py`**:
+  * Biomedical noise simulator implementing 6 physiological and environmental distortions: respiration baseline wander, 50/60 Hz powerline hum, electromyographic (EMG) muscle tremors, electrode contact motion jumps, and inter-patient amplitude scaling.
+* **`test_augmentations.py`**:
+  * Unit test suite verifying signal stability, SNR bounds, and numerical properties of the augmentation pipeline.
 * **`model.py`**:
-  * Definición funcional de la arquitectura Tiny 1D-CNN en pure JAX (`conv_general_dilated`, ReLU, Global Average Pooling y neurona Densa sigmoide).
-  * 465 parámetros entrenables (~0.5 KB de peso total).
+  * Functional definition of the Tiny 1D-CNN architecture in pure JAX (`conv_general_dilated`, ReLU activations, Global Average Pooling, and a single Dense sigmoid unit).
+  * Exactly 465 trainable parameters (~0.5 KB total parameter footprint).
 * **`train_jax_gpu.py`**:
-  * Detecta automáticamente la GPU **NVIDIA GeForce RTX 5070** (`CudaDevice(id=0)`).
-  * Compila el entrenamiento en GPU mediante `@jax.jit` y optimización con Adam/Optax.
-  * Calcula métricas clínicas clave para triaje: Exactitud, Sensibilidad (Recall de alerta), Especificidad, Precisión y F1-Score.
-  * Exporta los mejores pesos entrenados directamente a `02_model_cpu/model_weights/` y `checkpoints/`.
-* **`requirements_gpu.txt`** y **`setup_env.sh`**:
-  * Paquetes de CUDA 12 (`jax[cuda12]`, `optax`, `scipy`, `numpy`) para habilitar aceleración por hardware en la GPU RTX 5070.
+  * Auto-detects the host **NVIDIA GeForce RTX 5070** GPU (`CudaDevice(id=0)`).
+  * Compiles the GPU training graph via `@jax.jit` and optimizes with AdamW and Optax cosine decay scheduler.
+  * Implements Binary Focal Loss ($\gamma = 2.0, \alpha = 0.55$) to address severe class imbalance.
+  * Evaluates clinical triage metrics: Accuracy, Sensitivity (Alert Recall), Specificity, Precision, and F1-Score.
+  * Automatically exports the best trained weights to `02_model_cpu/model_weights/` and `checkpoints/`.
+* **`evaluate_clinical_metrics.py`**:
+  * Comprehensive clinical validation suite generating ROC-AUC curves, confusion matrices, and per-database sensitivity breakdowns exported to `metadata/clinical_validation_report.json`.
+* **`requirements_gpu.txt`** & **`setup_env.sh`**:
+  * CUDA 12 environment dependencies (`jax[cuda12]`, `optax`, `scipy`, `numpy`) for hardware acceleration.
 
 ---
 
-## Ejecución Rápida
+## Quick Execution
 
-### 1. Generar el dataset procesado
+### 1. Generate the Processed Dataset
 ```bash
 python3 01_training_pipeline/dataset_generator.py
 ```
 
-### 2. Entrenar el modelo con GPU (RTX 5070)
+### 2. Verify Augmentation Stability
+```bash
+python3 01_training_pipeline/test_augmentations.py
+```
+
+### 3. Train the Model on GPU (RTX 5070)
 ```bash
 python3 01_training_pipeline/train_jax_gpu.py
 ```
-*Tiempo de entrenamiento:* $\sim 3.5\text{ segundos}$ para 15 épocas completas aceleradas en la RTX 5070.
+*Training Performance:* $\sim 3.5\text{ seconds}$ for 15 full epochs accelerated on the RTX 5070.
+
+### 4. Evaluate Clinical Metrics
+```bash
+python3 01_training_pipeline/evaluate_clinical_metrics.py
+```

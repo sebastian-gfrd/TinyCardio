@@ -1,24 +1,24 @@
-# TinyCardio Dispatch: Especificación y Prompt Maestro para Lovable.dev
+# TinyCardio Dispatch: Specification and Master Prompt for Lovable.dev
 **World Bank Group & Korea MSIT/MOFE Global AI Summit Hackathon 2026**  
-**Plataforma de Despacho y Triaje Médico Rural impulsada por Telemetría 2G SMS**
+**Rural Medical Triage & Ambulance Dispatch Platform Powered by 2G SMS Telemetry**
 
 ---
 
-## 1. Visión y Propósito de la Plataforma
+## 1. Platform Vision & Healthcare Purpose
 
-**TinyCardio Dispatch** es el centro de comando web de respuesta rápida para centros de salud rurales, hospitales distritales y redes de Promotores de Salud Comunitarios (*Community Health Workers - CHWs*).
+**TinyCardio Dispatch** is a mission-critical emergency command dashboard engineered for rural health dispensaries, district triage hospitals, and Community Health Worker (CHW) networks across low- and middle-income countries (LMICs).
 
-La plataforma resuelve el eslabón crítico de la **"Última Milla"**: cuando el dispositivo de borde TinyCardio (\$4.30 USD) detecta una arritmia maligna o infarto en el pecho de un paciente rural, transmite un paquete SMS 2G ultracomprimido (<60 bytes). **TinyCardio Dispatch** recibe esta señal, la geolocaliza en un mapa rural interactivo, presenta el perfil clínico del paciente, y permite al personal médico **despachar una ambulancia o mototaxi con desfibrilador en menos de 60 segundos**, enviando automáticamente un SMS de confirmación al paciente.
+The platform bridges the critical **"Last Mile"** gap: when an ultra-low-cost TinyCardio edge monitor (\$4.30 USD) detects a life-threatening ventricular arrhythmia or pre-arrest autonomic collapse on a rural patient, it autonomously broadcasts a compact 2G SMS telemetry payload (<60 bytes). **TinyCardio Dispatch** ingests this transmission, geolocates the patient's homestead on an interactive GIS map, displays their pre-registered clinical history, and empowers healthcare dispatchers to **mobilize an ambulance, equipped mototaxi, or community health worker in under 60 seconds**, while automatically generating a reassurance SMS confirmation back to the patient.
 
 ---
 
-## 2. Prompt Maestro Copiar y Pegar para Lovable.dev
+## 2. Copy-and-Paste Master Prompt for Lovable.dev
 
 > [!TIP]
-> **Instrucciones para Lovable:**  
-> 1. Ve a [Lovable.dev](https://lovable.dev) e inicia un nuevo proyecto.
-> 2. Copia y pega el texto del recuadro inferior en el campo de creación de Lovable.
-> 3. Lovable generará automáticamente la aplicación completa con diseño React, Tailwind CSS, Lucide Icons y mapa interactivo.
+> **Instructions for Lovable:**  
+> 1. Navigate to [Lovable.dev](https://lovable.dev) and start a new project.
+> 2. Copy and paste the prompt below directly into the Lovable generation input.
+> 3. Lovable will immediately scaffold the complete application with React, Tailwind CSS, Lucide Icons, and interactive mapping.
 
 ```markdown
 Create a high-impact, mission-critical medical emergency dashboard called "TinyCardio Dispatch".
@@ -28,62 +28,62 @@ It processes ultra-low-bandwidth 2G SMS emergency alerts (<60 bytes) sent by $4.
 Key Features & UI Structure:
 
 1. Top Navigation Bar:
-   - Left: Heartbeat icon with pulsing red dot and title "TinyCardio Dispatch" (subtitle: "Sistema Central de Triaje y Respuesta Rápida Rural").
-   - Center: Location badge: "Centro de Salud Rural San Gabriel (Distrito 4 - Red Veredal)".
-   - Right: Real-time telemetry status: "Red 2G GSM: ACTIVA (94% Señal)", "Ambulancias Listas: 3/4", live digital clock, and Dark/Light mode toggle.
+   - Left: Heartbeat icon with pulsing red dot and title "TinyCardio Dispatch" (subtitle: "Rural Rapid Triage & Emergency Response System").
+   - Center: Location badge: "Centro de Salud Rural San Gabriel (District 4 - Rural Health Network)".
+   - Right: Real-time telemetry status: "2G GSM Network: ACTIVE (94% Signal)", "Ambulances Ready: 3/4", live digital clock, and Dark/Light mode toggle.
 
 2. Impact & Triage KPI Banner (Top Grid - 5 Cards):
-   - "Emergencias Críticas Activas": 2 (Pulsing Red badge, lethal arrhythmias in Golden Hour).
-   - "Alertas Isquémicas Moderadas": 1 (Amber badge, ST elevation / angina).
-   - "Tiempo Promedio de Respuesta": "12.8 min" (World Bank Target: < 20 min).
-   - "Población Rural Protegida": "1,420 pacientes" (Iniciativa Bottom 40%).
-   - "Costo de Monitoreo / Paciente": "$4.30 USD (BOM) / $0.08 mes".
+   - "Active Critical Emergencies": 2 (Pulsing Red badge, lethal arrhythmias in Golden Hour).
+   - "Moderate Ischemia Alerts": 1 (Amber badge, ST elevation / angina).
+   - "Average Response Time": "12.8 min" (World Bank Target: < 20 min).
+   - "Rural Population Protected": "1,420 patients" (Bottom 40% Initiative).
+   - "Monitoring Cost per Patient": "$4.30 USD (BOM) / $0.08 month".
 
 3. Split-Screen Operations Center (Main Grid):
-   A. Left Column (42% width) - "Bandeja de Triage en Tiempo Real":
-      - Filter tabs: [Todas (3)], [Críticas Rojas (2)], [Moderadas (1)], [En Camino (1)].
+   A. Left Column (42% width) - "Real-Time Emergency Triage Feed":
+      - Filter tabs: [All (3)], [Critical Red (2)], [Moderate Amber (1)], [En Route (1)].
       - Toggle for audible siren alert sound.
       - Patient Alert Cards sorted by medical urgency:
-        * Card Header: Severity badge ("CRÍTICO: Fibrilación Ventricular" or "ALERTA: Isquemia Aguda") + Golden Hour countdown timer (e.g., "56:18 restantes").
-        * Patient details: Name (e.g. "María Quispe Huamán", 62 años), Device ID (#TC-1024), Battery level (89%).
-        * Vital signs badges: Heart Rate (182 lpm), AI Risk Score (96% - TinyML INT8).
+        * Card Header: Severity badge ("CRITICAL: Ventricular Fibrillation" or "ALERT: Acute Ischemia") + Golden Hour countdown timer (e.g., "56:18 remaining").
+        * Patient details: Name (e.g. "María Quispe Huamán", 62 yrs), Device ID (#TC-1024), Battery level (89%).
+        * Vital signs badges: Heart Rate (182 bpm), AI Risk Score (96% - TinyML INT8).
         * Location: "Vereda El Roble, Sector Alto (Km 14)".
-        * Primary Button: "Evaluar Trazado & Despachar Auxilio".
+        * Primary Button: "Evaluate Rhythm & Dispatch Aid".
 
-   B. Right Column (58% width) - "Mapa Geoespacial de Rescate y Recursos":
+   B. Right Column (58% width) - "Geospatial Rescue & Resource Dispatch Map":
       - Interactive map view (using Leaflet / Mapbox or clean SVG mock map):
         * Pin for "Hospital San Gabriel" (Central Base).
         * Pulsing Red pins for patients with active critical cardiac arrest alerts.
         * Amber pin for patients with acute ischemia.
         * Moving / Static markers for emergency units:
-          - Ambulancia 01 (Tipo II - Base Central)
-          - Mototaxi Médica 02 (Equipada con DEA portátil)
-          - Promotora de Salud Comunitaria Rosa Medina (CHW-04 en motocicleta)
-        * When a patient is selected, draw a route line from the nearest resource to the patient's home coordinates with ETA (e.g., "Ruta Rural 4 - 12 min").
+          - Ambulance 01 (Type II - Central Base)
+          - Rescue Mototaxi 02 (Equipped with portable AED)
+          - Community Health Worker Rosa Medina (CHW-04 on motorcycle)
+        * When a patient is selected, draw a route line from the nearest resource to the patient's home coordinates with ETA (e.g., "Rural Road 4 - 12 min").
 
 4. Patient Emergency Details & Dispatch Modal (Opens on card click):
-   - Patient Profile: Full Name, Age, Blood Type (e.g., O+), Chronic Conditions ("Infarto previo 2024, Hipertensa"), Current Medications ("Enalapril 10mg, Aspirina"), Emergency Contact ("Hijo: Juan Quispe +51 984 551 203").
+   - Patient Profile: Full Name, Age, Blood Type (e.g., O+), Chronic Conditions ("Prior MI 2024, Hypertension"), Current Medications ("Enalapril 10mg, Aspirin"), Emergency Contact ("Son: Juan Quispe +51 984 551 203").
    - Raw 2G SMS Payload Inspector: Shows the actual received 37-character SMS:
      `TC:D=1024;E=VF;R=96%;HR=182;TS=3412s` with chips breaking down: Device ID, Event Code (VFDB), Risk Probability, Heart Rate, and CRC8 Validated.
    - Dynamic Animated ECG Oscilloscope: An animated HTML5 canvas drawing the lethal ECG waveform (rapid chaotic ventricular fibrillation waves or ST-elevation segment) with grid background.
-   - Medical Protocol Recommendation: "Protocolo 01: Fibrilación Ventricular. Despacho inmediato de unidad con Desfibrilador Externo Automático (DEA)."
+   - Medical Protocol Recommendation: "Protocol 01: Ventricular Fibrillation. Immediate dispatch of unit equipped with Automated External Defibrillator (AED)."
    - Emergency Resource Dispatch Selector:
      * Radio cards to choose vehicle:
-       [Ambulancia 01 - 4x4 Todo Terreno (ETA 18 min)]
-       [Mototaxi Médica 02 - Con DEA portátil (ETA 11 min)] (Recomendada)
-       [Promotor Comunitario CHW-04 en Moto (ETA 07 min)]
+       [Ambulance 01 - 4x4 All-Terrain (ETA 18 min)]
+       [Rescue Mototaxi 02 - With Portable AED (ETA 11 min)] (Recommended)
+       [Community Health Worker CHW-04 on Motorcycle (ETA 07 min)]
      * Notes input for driver/paramedic.
-   - Big Action Button: "CONFIRMAR DESPACHO DE EMERGENCIA".
+   - Big Action Button: "CONFIRM EMERGENCY DISPATCH".
    - Automated Reassurance SMS Action: Upon dispatch, show toast notification:
-     "SMS de reaseguramiento transmitido al paciente: 'TinyCardio: Auxilio despachado. Mototaxi Médica 02 en camino a su ubicación. ETA: 11 min. Manténgase recostado.'"
-   - Updates patient card badge to "EN CAMINO".
+     "Reassurance SMS transmitted to patient: 'TinyCardio: Emergency assistance dispatched. Rescue Mototaxi 02 en route to your location. ETA: 11 min. Please remain lying down.'"
+   - Updates patient card badge to "EN ROUTE".
 
 5. Floating Live Simulation Drawer (For Hackathon Judges & Demos):
-   - A discreet button at bottom-right "Demostración para Jurado Hackathon":
-     * Button: "Simular Alerta SMS: Fibrilación Ventricular (María Quispe - TC-1024)"
-     * Button: "Simular Alerta SMS: Isquemia Aguda (Carlos Mamani - TC-2048)"
-     * Button: "Simular Alerta SMS: Pre-Paro Cardíaco (Esperanza Flores - TC-3072)"
-     * Button: "Restablecer Datos de Demostración"
+   - A discreet button at bottom-right "Hackathon Jury Demonstration Toolbar":
+     * Button: "Simulate SMS Alert: Ventricular Fibrillation (María Quispe - TC-1024)"
+     * Button: "Simulate SMS Alert: Acute Ischemia (Carlos Mamani - TC-2048)"
+     * Button: "Simulate SMS Alert: Cardiac Arrest Precursor (Esperanza Flores - TC-3072)"
+     * Button: "Reset Demo Data"
    - Clicking these buttons injects real-time alerts into the feed with sound and animations to showcase the live 2G reception capability.
 
 Design System:
@@ -94,9 +94,9 @@ Design System:
 
 ---
 
-## 3. Modelo de Datos y Contrato de API (TypeScript Interfaces)
+## 3. Data Model & API Contract (TypeScript Interfaces)
 
-Si deseas configurar o editar manualmente los tipos en el proyecto Lovable, utiliza la siguiente estructura tipada:
+For configuring or manually adjusting types within your Lovable project:
 
 ```typescript
 export type AlertSeverity = 'CRITICO_ROJO' | 'ALERTA_AMARILLO' | 'OBSERVACION_AZUL';
@@ -161,32 +161,32 @@ export interface EmergencyAlert {
 
 ---
 
-## 4. Conexión Opcional con el Backend Local en Python
+## 4. Connecting Lovable with the Local Python Backend
 
-Si deseas conectar la plataforma en Lovable directamente con tu servidor local TinyCardio:
+To link the Lovable frontend directly to your local TinyCardio telemetry hub:
 
-1. **Inicia el Servidor de Telemetría en tu terminal:**
+1. **Launch the Telemetry Server in your terminal:**
    ```bash
    python3 02_model_cpu/sms_telemetry_webhook.py --port 8090
    ```
-2. **Exponer localmente vía túnel (ngrok o Cloudflare Tunnels):**
+2. **Expose locally via tunnel (Cloudflare Tunnels or ngrok):**
    ```bash
    npx localtunnel --port 8090
-   # O con ngrok:
+   # Or using ngrok:
    ngrok http 8090
    ```
-3. **Configurar la URL en Lovable:**  
-   Pega la URL pública generada (ej. `https://tinycardio-hub.loca.lt`) en la variable de entorno o configuración de fetch de Lovable:
-   - `GET /api/alerts`: Obtiene la lista activa de emergencias.
-   - `POST /api/sms/incoming`: Recibe nuevos mensajes SMS.
-   - `POST /api/dispatch/ambulance`: Confirma el despacho y emite el SMS de retorno.
-   - `GET /api/alerts/stream`: Canal en vivo SSE (*Server-Sent Events*).
+3. **Configure the API endpoint in Lovable:**  
+   Set the public URL (e.g. `https://tinycardio-hub.loca.lt`) in your Lovable configuration:
+   - `GET /api/alerts`: Fetches the active emergency queue.
+   - `POST /api/sms/incoming`: Ingests incoming 2G SMS payloads.
+   - `POST /api/dispatch/ambulance`: Confirms resource dispatch and queues reassurance SMS.
+   - `GET /api/alerts/stream`: Real-time Server-Sent Events (SSE) push channel.
 
-4. **Simular eventos en tiempo real durante la presentación:**
+4. **Simulate live events during presentations:**
    ```bash
-   # Enviar alerta de Fibrilación Ventricular
+   # Send Ventricular Fibrillation alert
    python3 02_model_cpu/simulate_telemetry_event.py --device 1024 --event VF --risk 97 --hr 185
 
-   # Enviar alerta de Pre-Paro Cardíaco
+   # Send Cardiac Arrest Precursor alert
    python3 02_model_cpu/simulate_telemetry_event.py --device 3072 --event ARR --risk 99 --hr 195
    ```
