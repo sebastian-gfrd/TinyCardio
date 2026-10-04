@@ -13,7 +13,7 @@ This directory contains the optimized **CPU execution runtime**, local clinic ga
 * **`cli_monitor.py`**: Interactive ANSI terminal monitor rendering a live ASCII oscilloscope waveform and dynamic risk gauge for headless or SSH remote environments.
 * **`gateway_server.py`**: Zero-dependency Python HTTP server serving REST endpoints (`GET /`, `POST /api/predict`, `GET /api/stream_patient`) and an interactive HTML5 Canvas oscilloscope dashboard (`web/index.html`).
 * **`sms_telemetry_webhook.py`**: Microservice that ingests incoming 2G SMS payloads (<60 bytes), correlates them with pre-registered rural patient medical records, tracks Golden Hour countdowns, and broadcasts real-time updates via Server-Sent Events (SSE).
-* **`simulate_telemetry_event.py`**: Command-line utility to simulate edge node emergency SMS transmission into the triage hub for live hackathon demonstrations.
+* **`simulate_telemetry_event.py`**: Command-line utility to simulate edge node emergency SMS transmission into the triage hub for testing and field verification.
 * **`web/index.html`**: Clean dark-mode clinical dashboard with real-time waveform visualization, BPM detection, and triage level gauges.
 
 ---

@@ -1,5 +1,5 @@
 # Clinical and Technical Analysis of PhysioNet Databases
-**TinyCardio Project — World Bank Group & Korea MSIT/MOFE Hackathon 2026**
+**TinyCardio Biomedical Engineering Documentation**
 
 This document presents an in-depth clinical, pathophysiological, and technical analysis of the four electrocardiography (ECG) datasets organized within this repository: **`sddb`**, **`vfdb`**, **`edb`**, and **`nsrdb`**.
 

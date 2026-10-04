@@ -5,11 +5,11 @@ TinyCardio Rural Triage & SMS Telemetry Hub (Pilar 2)
 Microservice that receives ultra-low bandwidth 2G SMS payloads (<60 bytes)
 from TinyCardio Edge Nodes ($4.30 USD), associates them with pre-registered
 rural patient medical records, and broadcasts real-time events to the
-Lovable / Web Emergency Dispatch Dashboard via REST and Server-Sent Events (SSE).
+Web Emergency Dispatch Dashboard via REST and Server-Sent Events (SSE).
 
 Features:
   - Zero third-party dependencies (Pure Python standard library)
-  - Full CORS support for Lovable / React / Vue / Mobile web frontends
+  - Full CORS support for React / Vue / Mobile web frontends
   - Real-time Server-Sent Events (SSE) streaming (/api/alerts/stream)
   - Pre-registered rural patient registry (GIS coordinates, history, contact)
   - Golden Hour (1-hour) countdown & triage severity classifier
@@ -462,7 +462,7 @@ class TelemetryHubHandler(BaseHTTPRequestHandler):
 
 
 def seed_initial_demo_alerts():
-    """Populate realistic demo alerts for immediate hackathon evaluation"""
+    """Populate realistic initial alerts for clinical triage simulation"""
     demo_events = [
         {"device_id": 1024, "event_code": "VF", "risk_score_pct": 96, "heart_rate_bpm": 182, "timestamp_sec": int(time.time() - 240)},
         {"device_id": 2048, "event_code": "ISCH", "risk_score_pct": 78, "heart_rate_bpm": 114, "timestamp_sec": int(time.time() - 650)}

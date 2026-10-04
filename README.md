@@ -1,20 +1,20 @@
-# TinyCardio — World Bank Group & Korea MSIT/MOFE Global AI Summit Hackathon 2026
+# TinyCardio: Autonomous Biomedical Edge AI System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![AI Engine: JAX](https://img.shields.io/badge/JAX-0.4.x%20%7C%20CUDA%2012-red.svg)](https://github.com/google/jax)
 [![Edge Target: Pure C99](https://img.shields.io/badge/Edge%20AI-Pure%20C99%20%7C%20INT8-green.svg)](#pillar-3-serialized-edge-model-for-microcontrollers-03_edge_serialized)
-[![BOM Cost: $4.30 USD](https://img.shields.io/badge/Hardware%20BOM-%244.30%20USD-brightgreen.svg)](docs/WORLD_BANK_IMPACT_REPORT.md)
-[![UN SDGs: 3.4 & 9.5](https://img.shields.io/badge/UN%20SDGs-3.4%20%26%209.5-orange.svg)](docs/WORLD_BANK_IMPACT_REPORT.md)
+[![Hardware BOM: $4.30 USD](https://img.shields.io/badge/Hardware%20BOM-%244.30%20USD-brightgreen.svg)](#hardware-envelope--unit-economics)
+[![Inference Latency: <0.8ms](https://img.shields.io/badge/Inference%20Latency-%3C0.8%20ms-purple.svg)](#performance-benchmarks)
 
-**TinyCardio** is an ultra-low-cost, offline-first biomedical Edge AI / TinyML system engineered for the autonomous, real-time detection of cardiac autonomic collapse (Sudden Cardiac Death, lethal ventricular arrhythmias, and acute myocardial ischemia) directly on **\$2.00 to \$4.30 USD commercial off-the-shelf microcontrollers**, operating with zero dependency on continuous internet connectivity, expensive smartphones, or centralized cloud servers.
+**TinyCardio** is an offline-first biomedical Edge AI / TinyML system engineered for autonomous, real-time detection of cardiac autonomic collapse (Sudden Cardiac Death pre-arrest, malignant ventricular arrhythmias, and acute myocardial ischemia) directly on **\$2.00 to \$4.30 USD commercial off-the-shelf microcontrollers**, operating with zero dependency on continuous internet connectivity, smartphones, or cloud infrastructure.
 
-When a life-threatening cardiac event occurs, TinyCardio synthesizes an ultra-compact telemetry payload (**< 60 bytes**) transmitted via **standard 2G SMS**, autonomously alerting local Community Health Workers (CHWs), rural dispensaries, and ambulance dispatch centers within the clinical **"Golden Hour"**.
+When a life-threatening cardiac rhythm is identified, TinyCardio synthesizes an ultra-compact telemetry payload (**< 60 bytes**) transmitted via **standard 2G SMS** or local mesh radio, alerting emergency responders and local clinic gateways during the critical **"Golden Hour"**.
 
 ---
 
 ## Modular Three-Pillar Architecture
 
-The repository is organized into three decoupled, production-grade engineering pillars:
+The codebase is organized into three decoupled, production-grade engineering pillars:
 
 ```
 TinyCardio/
@@ -37,7 +37,7 @@ TinyCardio/
 │   ├── benchmark_cpu.py      # Latency & throughput benchmark (1,450 windows/sec)
 │   ├── run_patient_simulation.py # Live streaming patient simulation on unseen PhysioNet records
 │   ├── cli_monitor.py        # Terminal ANSI live ECG oscilloscope with risk gauge
-│   ├── gateway_server.py     # Zero-dependency HTTP gateway server for rural clinics
+│   ├── gateway_server.py     # Zero-dependency HTTP gateway server for local clinic triage
 │   ├── sms_telemetry_webhook.py # 2G SMS telemetry ingestion hub with REST & SSE streams
 │   └── simulate_telemetry_event.py # Interactive CLI simulator for edge SMS transmissions
 │
@@ -69,30 +69,46 @@ TinyCardio/
 │   ├── summary_statistics.json    # Consolidated database statistics
 │   └── clinical_validation_report.json # Detailed clinical performance report
 │
-├── docs/                     # Strategic, clinical & submission documentation
-│   ├── CLINICAL_TECHNICAL_ANALYSIS.md # Pathophysiological rationale and dataset analysis
-│   ├── WORLD_BANK_IMPACT_REPORT.md    # Socioeconomic impact, SDGs & $4.30 BOM breakdown
-│   ├── LOVABLE_PROMPT_SPECIFICATION.md # Master prompt & spec for Lovable triage dashboard
-│   ├── PITCH_SCRIPT_3MIN.md           # 3-minute video pitch presentation script
-│   ├── SUBMISSION_SUMMARY.md          # Official submission dossier & verification guide
-│   └── NOOR_HEALTH_HACKATHON_SUBMISSION.md # World Bank Small AI integration brief
+├── docs/                     # Technical and clinical analysis documentation
+│   └── CLINICAL_TECHNICAL_ANALYSIS.md # Pathophysiological rationale and dataset analysis
 │
-├── tinycardio_specification.md # System technical specification
+├── tinycardio_specification.md # Engineering and system specification
 └── README.md                 # This document
 ```
 
 ---
 
-## 60-Second Quick Verification Guide
+## Technical Pipeline & Signal Flow
 
-For hackathon judges and evaluators to reproduce all core results immediately from the repository root:
+```
++------------------+      +-------------------+      +-------------------------+
+| Single-Lead ECG  | ---> | Hardware Filter / | ---> | Circular Sliding Window |
+| (AD8232 / Lead I)|      | ADC (250 Hz)      |      | [250 samples, 1 second] |
++------------------+      +-------------------+      +-------------------------+
+                                                                  |
+                                                                  v
++------------------+      +-------------------+      +-------------------------+
+| 2G SMS Alert     | <--- | Threshold & State | <--- | INT8 1D-CNN (540 Bytes) |
+| (<60 Bytes)      |      | Machine Logic     |      | (Pure C99 Static RAM)   |
++------------------+      +-------------------+      +-------------------------+
+```
+
+1. **Continuous Acquisition:** Single-lead ECG signals are acquired at 250 Hz and preconditioned via a 0.5–40 Hz bandpass filter to suppress respiration drift and electrical grid hum.
+2. **Deterministic Inference:** Every 1-second window (250 samples) is processed by the 540-byte 1D-CNN in internal SRAM (< 0.8 ms latency). Over 99% of normal sinus rhythms are classified and cleared locally with zero radio transmissions, conserving battery for months.
+3. **Emergency Escalation:** If a lethal rhythm (Ventricular Fibrillation, Flutter, or Pre-Arrest Collapse) is identified, the system activates an audible buzzer and wakes the 2G GSM modem to transmit a compact <60-byte SMS telemetry packet directly to local emergency responders.
+
+---
+
+## Quick Verification Guide
+
+To verify the core components from the repository root:
 
 ### 1. Cross-Engine Numerical Parity Audit
 Verifies mathematical consistency across all three execution runtimes (JAX GPU, NumPy CPU, and C99 INT8):
 ```bash
 python3 03_edge_serialized/cross_verify_engines.py
 ```
-> **Expected Output:** Bit-exact parity (100%) between JAX GPU and NumPy CPU, and **$r = 0.9892$ Pearson correlation** with C99 INT8 quantized weights across 500 unseen test windows.
+> **Result:** Bit-exact parity (100%) between JAX GPU and NumPy CPU, and **$r = 0.9892$ Pearson correlation** with C99 INT8 quantized weights across 500 unseen test windows.
 
 ### 2. Real-Time Patient Streaming Simulation
 ```bash
@@ -110,13 +126,12 @@ python3 02_model_cpu/gateway_server.py --port 8080
 ```
 Open `http://localhost:8080` to observe the real-time ECG oscilloscope with continuous AI risk classification.
 
-### 4. Interactive Terminal Oscilloscope (Headless / SSH Mode)
-For diagnostics in headless or low-bandwidth serial environments:
+### 4. Interactive Terminal Oscilloscope (Headless / Serial / SSH)
 ```bash
 python3 02_model_cpu/cli_monitor.py data/vfdb/418
 ```
 
-### 5. Rural SMS Telemetry Hub & Live Event Simulator
+### 5. SMS Telemetry Hub & Live Event Simulator
 ```bash
 # Terminal 1: Launch the SMS Telemetry Hub
 python3 02_model_cpu/sms_telemetry_webhook.py --port 8090
@@ -127,33 +142,44 @@ python3 02_model_cpu/simulate_telemetry_event.py --device 1024 --event VF --risk
 
 ---
 
-## Clinical & Hardware Performance Benchmarks
+## Performance Benchmarks
 
-| Parameter | Standard Requirement | TinyCardio Measured Result | Status |
+| Parameter | Standard Target | TinyCardio Measured Result | Compliance |
 |:---|:---:|:---:|:---:|
-| **ROM Flash Memory** | < 16 KB Flash | **540 bytes** (0.53 KB) | Exceeded (30x smaller) |
-| **RAM SRAM Memory** | < 8 KB SRAM | **< 2.5 KB static** | Exceeded (3x smaller) |
-| **Memory Allocation** | Zero dynamic leaks | **0 calls to `malloc`** | 100% Static Arena |
+| **ROM Flash Memory** | < 16 KB Flash | **540 bytes** (0.53 KB) | 30x smaller |
+| **RAM SRAM Memory** | < 8 KB SRAM | **< 2.5 KB static** | 3x smaller |
+| **Dynamic Memory Allocation** | Zero heap leaks | **0 calls to `malloc`** | 100% Static Arena |
 | **Inference Latency** | < 100 ms | **< 0.8 ms** per window | 125x faster than real-time |
 | **Malignant VF Sensitivity** | > 90% | **100.0%** (PhysioNet VFDB) | Verified |
 | **Pre-Arrest Sensitivity** | > 85% | **93.2%** (PhysioNet SDDB) | Verified |
 | **Control False Alarms** | < 5% | **0.0%** (PhysioNet NSRDB) | Verified |
 | **SMS Telemetry Payload** | < 160 characters (1 SMS) | **32 chars text / 11B binary hex** | Standard 2G SMS compliant |
-| **Complete Hardware BOM** | < $10.00 USD | **$4.30 USD** | Scalable for Bottom 40% |
+| **Hardware BOM Cost** | < $10.00 USD | **$4.30 USD** | Ultra-low-cost silicon |
 
 ---
 
-## Comprehensive Documentation Index
+## Hardware Envelope & Unit Economics
 
-* **[Socioeconomic Impact Report & BOM Analysis (\$4.30 USD)](docs/WORLD_BANK_IMPACT_REPORT.md)**: Alignment with UN SDGs 3.4 & 9.5, World Bank Bottom 40% initiative, and rural deployment economics.
-* **[Lovable.dev Dispatch Platform Specification & Master Prompt](docs/LOVABLE_PROMPT_SPECIFICATION.md)**: Master prompt, UI/UX specification, and API contracts for building the emergency dispatch platform in Lovable.
-* **[3-Minute Video Pitch Presentation Script](docs/PITCH_SCRIPT_3MIN.md)**: Timed audiovisual presentation script for hackathon evaluation.
-* **[Official Submission Summary Dossier](docs/SUBMISSION_SUMMARY.md)**: Comprehensive technical submission sheet and verification guide.
-* **[Clinical and Technical Analysis](docs/CLINICAL_TECHNICAL_ANALYSIS.md)**: Pathophysiological breakdown of PhysioNet databases and machine learning considerations.
-* **[World Bank Small AI NoorCare Brief](docs/NOOR_HEALTH_HACKATHON_SUBMISSION.md)**: Official Small AI briefing on multilingual rural healthcare access.
+The complete ambulatory hardware Bill of Materials (BOM) is designed for extreme affordability:
+
+| Component | Part / Reference | Unit Cost (Qty 1,000) | Function |
+|:---|:---|:---:|:---|
+| **Microcontroller (MCU)** | Raspberry Pi RP2040 (Dual Cortex-M0+ @ 133 MHz) or STM32F401 | **\$0.70 USD** | Runs the 540-byte TinyML INT8 engine; executes ADC sampling and digital filtering |
+| **Biomedical Sensor** | Analog Devices AD8232 (Single-Lead ECG Front-End) | **\$1.20 USD** | Instrumentation amp, right-leg drive (RLD), and 2-pole filter |
+| **Cellular Telemetry** | SIMCom SIM800L or Quectel M95 (2G GSM Module) | **\$1.80 USD** | Transmits autonomous emergency SMS telemetry (<60 bytes) |
+| **Power Management** | TP4056 Li-Ion Charger + 3.3V LDO | **\$0.25 USD** | Regulates power from micro-USB, 3.7V cell, or small solar panel |
+| **Electrodes & Cabling** | 3-Lead Snap Cable + Ag/AgCl Gel Electrodes | **\$0.35 USD** | Single-lead chest placement |
+| **Total Hardware BOM** | **Complete Edge Node** | **\$4.30 USD** | **Complete autonomous edge cardiac diagnostics system** |
+
+---
+
+## Documentation
+
+* **[Technical System Specification](tinycardio_specification.md)**: Full architecture specification, model layers, digital signal processing parameters, and memory layout.
+* **[Clinical and Technical Analysis](docs/CLINICAL_TECHNICAL_ANALYSIS.md)**: In-depth pathophysiological analysis of the `sddb`, `vfdb`, `edb`, and `nsrdb` PhysioNet databases, calibration math, anti-aliased resampling, and data leakage prevention.
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License**, fostering open-source adoption by health ministries, humanitarian NGOs, and affordable medical technology innovators worldwide.
+This project is licensed under the **MIT License**.
